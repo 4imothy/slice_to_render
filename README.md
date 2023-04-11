@@ -33,3 +33,4 @@ python src/main.py -rc --slices=slices/mri --output=output.ply
 * [ ] add support for tif files with multiple images
 * [ ] read faces in ply
 * [ ] read other image filetypes
+* [ ] Ignore the background
