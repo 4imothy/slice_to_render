@@ -1,0 +1,5 @@
+__pycache__
+# your name a venv if you use one
+env
+.DS_Store
+*.ply
