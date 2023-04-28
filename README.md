@@ -30,7 +30,6 @@ python src/main.py -rc --slices=slices/mri --output=output.ply
 * [opencv](https://github.com/opencv/opencv-python)
 
 ### Todo
-* [ ] add support for tif files with multiple images
-* [ ] read faces in ply
-* [ ] read other image filetypes
+* [ ] Add support for tif files with multiple images
 * [ ] Ignore the background
+* [ ] read other image filetypes
