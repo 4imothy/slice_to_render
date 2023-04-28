@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+from PIL import Image, ImageSequence
 
 
 # creates a point cloud file (.ply) from numpy array
@@ -48,7 +49,7 @@ def addPoints(mask, points_list, depth):
         points_list.append(point)
 
 
-def tiff_to_ply(path, output_name, dir=True):
+def tiff_to_ply(path, output_name, dir=False):
     # tweakables
     slice_thickness = .2  # distance between slices
     xy_scale = 1  # rescale of xy distance
@@ -57,8 +58,7 @@ def tiff_to_ply(path, output_name, dir=True):
     if dir:
         images = get_images_from_dir(path, [".tif", ".tiff"])
     else:
-        print("reading tif with multiple images not available")
-        exit(1)
+        images = get_image_from_file(path)
     # keep a blank mask
     blank_mask = np.zeros_like(images[0], np.uint8)
 
@@ -136,3 +136,24 @@ def get_images_from_dir(folder, file_endings):
             img = cv2.resize(img, (100, 100))
             images.append(img)
     return images
+
+
+def get_image_from_file(path):
+    images = []
+    for im in cv2.imreadmulti(path)[1]:
+        # change here for more or less resolution
+        im = cv2.resize(im, (100, 100))
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+        # im = cv2.cvtColor(im, cv2.IMREAD_GRAYSCALE)
+        images.append(im)
+    return images
+    # return cv2.imreadmulti(path)
+    # images = []
+    # with Image.open(path) as image:
+    #     for i in range(image.n_frames):
+    #         image.seek(i)
+    #         img = np.array(image)
+    #         img = cv2.resize(img, (100,100))
+    #         images.append(img)
+    # return images
+    # return images
