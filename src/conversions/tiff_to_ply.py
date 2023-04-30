@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-from PIL import Image, ImageSequence
 
 
 # creates a point cloud file (.ply) from numpy array
@@ -49,37 +48,44 @@ def addPoints(mask, points_list, depth):
         points_list.append(point)
 
 
-def tiff_to_ply(path, output_name, dir=False):
+def tiff_to_ply(path, output_name):
     # tweakables
-    slice_thickness = .2  # distance between slices
+    slice_thickness = 0.2  # distance between slices
     xy_scale = 1  # rescale of xy distance
 
     # load images
-    if dir:
-        images = get_images_from_dir(path, [".tif", ".tiff"])
+    size = (100, 100)
+    flag = cv2.IMREAD_GRAYSCALE
+    if os.path.isdir(path):
+        images = get_images_from_dir(path, [".tif", ".tiff"], size, flag)
     else:
-        images = get_image_from_file(path)
-    # keep a blank mask
-    blank_mask = np.zeros_like(images[0], np.uint8)
+        images = get_images_from_file(path, size, flag)
+
+    images1 = get_images_from_file("slices/mri.tif", size, flag)
+    images2 = get_images_from_dir("slices/mri", [".tif", ".tiff"], size, flag)
+
+    # this should be true
+    print("Length 1: ", len(images1))
+    print("Length 2: ", len(images2))
+    for i, elem in enumerate(images1):
+        if not any(np.array_equal(elem, x) for x in images2):
+            print("No matching element in images2 for element", i, "in images1")
+        
+    for i, elem in enumerate(images2):
+        if not any(np.array_equal(elem, x) for x in images1):
+            print("No matching element in images1 for element", i, "in images2")
+        
 
     # create masks
     masks = []
-    masks.append(blank_mask)
     for image in images:
-        # mask
-        mask = cv2.inRange(image, 0, 100)
-
-        cv2.waitKey(1)
+        mask = cv2.inRange(image, 0, image.shape[0])
         masks.append(mask)
-    masks.append(blank_mask)
 
     # go through and get points
     depth = 0
     points = []
-    for index in range(1, len(masks)-1):
-        # progress check
-        # print("Index: " + str(index) + " of " + str(len(masks)))
-
+    for index in range(1, len(masks) - 1):
         # get three masks
         prev = masks[index - 1]
         curr = masks[index]
@@ -96,7 +102,7 @@ def tiff_to_ply(path, output_name, dir=False):
         addPoints(next_mask, points, depth)
 
         # get contour points (_, contours) in OpenCV 2.* or 4.*
-        contours, _ = cv2.findContours(curr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours = cv2.findContours(curr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[0]
         for con in contours:
             for point in con:
                 p = point[0]  # contours have an extra layer of brackets
@@ -121,39 +127,30 @@ def tiff_to_ply(path, output_name, dir=False):
 
     # save to point cloud file
     return createPointCloud(output_name, points)
+    
 
-
-def get_images_from_dir(folder, file_endings):
+def get_images_from_dir(folder, file_endings, size, flag):
     files = os.listdir(folder)
     images = []
-    is_file = True
     for file in files:
-        is_file = any(file.endswith(end) for end in file_endings)
-
-        if is_file:
-            img = cv2.imread(os.path.join(folder, file), cv2.IMREAD_GRAYSCALE)
-            # change here for more or less resolution
-            img = cv2.resize(img, (100, 100))
+        is_tif = any(file.endswith(end) for end in file_endings)
+        if is_tif:
+            # images.append(get_images_from_file(os.path.join(folder, file), size))
+            img = cv2.imread(os.path.join(folder, file), flag)
+            img = cv2.resize(img, size)
             images.append(img)
     return images
 
 
-def get_image_from_file(path):
+def get_images_from_file(path, size, flag):
     images = []
-    for im in cv2.imreadmulti(path)[1]:
+    read, loaded = cv2.imreadmulti(path, flags=flag)
+    if not read:
+        # TODO make this an error type
+        print("Couldn't Read File")
+        exit(1)
+    for img in loaded:
         # change here for more or less resolution
-        im = cv2.resize(im, (100, 100))
-        im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-        # im = cv2.cvtColor(im, cv2.IMREAD_GRAYSCALE)
-        images.append(im)
+        img = cv2.resize(img, size)
+        images.append(img)
     return images
-    # return cv2.imreadmulti(path)
-    # images = []
-    # with Image.open(path) as image:
-    #     for i in range(image.n_frames):
-    #         image.seek(i)
-    #         img = np.array(image)
-    #         img = cv2.resize(img, (100,100))
-    #         images.append(img)
-    # return images
-    # return images
