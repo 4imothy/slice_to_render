@@ -31,6 +31,7 @@ python src/main.py -rc --slices=slices/mri --output=output.ply
 
 ### Todo
 * [ ] Add support for tif files with multiple images
+* [ ] Make it work with resolutions $\neq$ $(100, 100)$
 * [ ] Implement rendering directly from tif directory
 * [ ] Ignore the background
 * [ ] read other image filetypes
