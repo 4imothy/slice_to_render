@@ -18,14 +18,7 @@ def createPointCloud(filename, arr):
     file.write("property float32 z\n")
     file.write("end_header\n")
 
-    # write points
-    point_count = 0
     for point in arr:
-        # progress check
-        point_count += 1
-        if point_count % 10000 == 0:
-            print("Point: " + str(point_count) + " of " + str(len(arr)))
-
         # create file string
         out_str = ""
         for axis in point:
@@ -135,7 +128,6 @@ def get_images_from_dir(folder, file_endings, size, flag):
     for file in files:
         is_tif = any(file.endswith(end) for end in file_endings)
         if is_tif:
-            # images.append(get_images_from_file(os.path.join(folder, file), size))
             img = cv2.imread(os.path.join(folder, file), flag)
             img = cv2.resize(img, size)
             images.append(img)
