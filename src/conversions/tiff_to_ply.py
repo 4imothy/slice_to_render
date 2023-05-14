@@ -78,6 +78,7 @@ def tiff_to_ply(path, output_name):
     # go through and get points
     depth = 0
     points = []
+    # was this written by chat gpt??
     for index in range(1, len(masks) - 1):
         # get three masks
         prev = masks[index - 1]
