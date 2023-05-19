@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 
-
 # creates a point cloud file (.ply) from numpy array
 def createPointCloud(filename, arr):
     # open file and write boilerplate header
@@ -67,7 +66,6 @@ def tiff_to_ply(path, output_name):
     for i, elem in enumerate(images2):
         if not any(np.array_equal(elem, x) for x in images1):
             print("No matching element in images1 for element", i, "in images2")
-        
 
     # create masks
     masks = []
@@ -78,7 +76,6 @@ def tiff_to_ply(path, output_name):
     # go through and get points
     depth = 0
     points = []
-    # was this written by chat gpt??
     for index in range(1, len(masks) - 1):
         # get three masks
         prev = masks[index - 1]

@@ -5,7 +5,6 @@
 import taichi as ti
 from plyfile import PlyData
 
-
 def read_ply(fn):
     plydata = PlyData.read(fn)
     # perform a check here if it has faces
@@ -15,9 +14,7 @@ def read_ply(fn):
     z = vertices['z']
     points = create_point_vert(x, y, z)
     # make the 50493 a variable read from the file
-    particles_pos = ti.Vector.field(3, dtype=ti.f32, shape=(50493))
-    init_particle_pos(particles_pos, points)
-    return particles_pos
+    return points
 
 
 def create_point_vert(x, y, z):
@@ -26,9 +23,3 @@ def create_point_vert(x, y, z):
         vec[i] = ti.Vector([x[i], y[i], z[i]])
 
     return vec
-
-
-@ti.kernel
-def init_particle_pos(particles_pos: ti.template(), points: ti.template()):
-    for i in range(particles_pos.shape[0]):
-        particles_pos[i] = points[i]
