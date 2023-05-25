@@ -24,3 +24,4 @@ python src/main.py
 * [ ] Make functions be *ti.kernels* and *ti.func* to speed up
 * [ ] Make it work with resolutions $\neq$ $(100, 100)$
 * [ ] Add color and custom render options
+* [ ] Add the UML outline
