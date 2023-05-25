@@ -1,5 +1,4 @@
 import taichi as ti
-from conversions.ply_to_mesh import read_ply
 from renders.particle_render import ParticleVisualizer
 from conversions.tiff_to_ply import tiff_to_ply
 
@@ -15,21 +14,18 @@ if ti._lib.core.with_metal():
     arch = ti.cpu
 ti.init(arch=arch)
 
-
-def begin_render(points):
-    # particles_pos = ti.Vector.field(3, dtype=ti.f32, shape=(50493))
+def render(points):
     p_viewer = ParticleVisualizer("Visualize", points)
     while p_viewer.window.running:
-        p_viewer.render() 
-
+        p_viewer.render()
 
 if __name__ == "__main__":
     # source = "slices/mri.tif"
     # source = "slices/mri"
     source = "slices/EmbryoCE/focal1.tif"
     output = "mri.ply"
-    # tiff_to_ply("slices/mri", "mri_from_dir.ply")
     tiff_to_ply(source, output)
-    # tiff_to_ply("slices/EmbryoCE/focal1.tif", "embreyoce.ply")
+    # has to be imported here as ti is ready to be imported here
+    from conversions.ply_to_mesh import read_ply
     points = read_ply(output)
-    begin_render(points)
+    render(points)
