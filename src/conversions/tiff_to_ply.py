@@ -56,9 +56,6 @@ def tiff_to_ply(path, output_name):
     images1 = get_images_from_file("slices/mri.tif", size, flag)
     images2 = get_images_from_dir("slices/mri", [".tif", ".tiff"], size, flag)
 
-    # this should be true
-    print("Length 1: ", len(images1))
-    print("Length 2: ", len(images2))
     for i, elem in enumerate(images1):
         if not any(np.array_equal(elem, x) for x in images2):
             print("No matching element in images2 for element", i, "in images1")

@@ -14,7 +14,8 @@ class ParticleVisualizer():
     # render the particles given
     def render(self):
         # simplify this down to renderer.render()
-        self.camera.track_user_inputs(self.window, movement_speed=0.50, hold_key=ti.ui.RMB)
+        self.camera.track_user_inputs(self.window,
+            movement_speed=0.50, hold_key=ti.ui.RMB)
         self.scene.set_camera(self.camera)
         self.scene.ambient_light((0.8, 0.8, 0.8))
         self.scene.point_light(pos=(0.5, 1.5, 1.5), color=(1, 1, 1))
