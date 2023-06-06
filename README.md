@@ -4,7 +4,7 @@ Will be used in *RWC* to send smaller images to a web interface.
 
 ### *UML* Diagram
 
-[diagram](./uml/diagram.svg)
+![diagram](./uml/diagram.svg)
 
 #### Use:
 **(Recommended) Create Virtual Environment:**
