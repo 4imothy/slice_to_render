@@ -1,0 +1,28 @@
+Edited on https://www.planttext.com/
+
+@startuml
+
+node "Entry Point" as entry_point
+node "TIFF Images\n(Sequence in Directory)" as tiff_sequential
+node "Stacked TIFF\n(Single File)" as tiff_stacked
+node "Point Cloud" as point_cloud
+node "File" as file
+node "Window" as window
+
+entry_point --> tiff_sequential: Process Multiple Tiff Images
+entry_point --> tiff_stacked: Process Stacked Tiff File
+
+tiff_sequential --> point_cloud: Create Point Cloud
+tiff_stacked --> point_cloud: Create Point Cloud
+
+point_cloud --> file: Save as file
+point_cloud --> window: Render
+
+file --> point_cloud: <<Read>> Read file
+
+point_cloud -. "OpenCV2,NumPy"
+
+window --> taichi: Taichi
+file --> plyfile: plyfile
+
+@enduml
