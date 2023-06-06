@@ -9,7 +9,7 @@ elif ti._lib.core.with_cuda():
 else:
     arch = ti.cpu()
 
-# cuda not working on mac, check with other systems
+# NOTE: cuda not working on mac, check with other systems
 if ti._lib.core.with_metal():
     arch = ti.cpu
 ti.init(arch=arch)

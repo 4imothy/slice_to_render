@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # creates a point cloud file (.ply) from numpy array
-def createPointCloud(filename, arr):
+def createPlyFile(filename, arr):
     # open file and write boilerplate header
     file = open(filename, 'w')
     file.write("ply\n")
@@ -114,7 +114,7 @@ def tiff_to_ply(path, output_name):
     points = np.unique(points.reshape(-1, points.shape[-1]), axis=0)
 
     # save to point cloud file
-    return createPointCloud(output_name, points)
+    return createPlyFile(output_name, points)
     
 
 def get_images_from_dir(folder, file_endings, size, flag):
