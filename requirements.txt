@@ -2,10 +2,9 @@ colorama==0.4.6
 dill==0.3.6
 markdown-it-py==2.2.0
 mdurl==0.1.2
-numpy==1.24.2
+numpy==1.24.3
 opencv-python==4.7.0.72
-Pillow==9.5.0
-plyfile==0.8.1
-Pygments==2.15.0
-rich==13.3.3
+plyfile==0.9
+Pygments==2.15.1
+rich==13.4.1
 taichi==1.6.0
