@@ -1,3 +1,5 @@
 #!/bin/sh
 
-autopep8 -r --in-place $(pwd)/src/
+flags="--in-place --max-line-length 79"
+
+autopep8 -r --in-place $flags $(pwd)/src/
