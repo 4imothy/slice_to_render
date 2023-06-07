@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 
 # creates a point cloud file (.ply) from numpy array
+
+
 def createPlyFile(filename, arr):
     # open file and write boilerplate header
     file = open(filename, 'w')
@@ -59,7 +61,7 @@ def tiff_to_ply(path, output_name):
     for i, elem in enumerate(images1):
         if not any(np.array_equal(elem, x) for x in images2):
             print("No matching element in images2 for element", i, "in images1")
-        
+
     for i, elem in enumerate(images2):
         if not any(np.array_equal(elem, x) for x in images1):
             print("No matching element in images1 for element", i, "in images2")
@@ -90,7 +92,8 @@ def tiff_to_ply(path, output_name):
         addPoints(next_mask, points, depth)
 
         # get contour points (_, contours) in OpenCV 2.* or 4.*
-        contours = cv2.findContours(curr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[0]
+        contours = cv2.findContours(
+            curr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[0]
         for con in contours:
             for point in con:
                 p = point[0]  # contours have an extra layer of brackets
@@ -115,7 +118,7 @@ def tiff_to_ply(path, output_name):
 
     # save to point cloud file
     return createPlyFile(output_name, points)
-    
+
 
 def get_images_from_dir(folder, file_endings, size, flag):
     files = os.listdir(folder)

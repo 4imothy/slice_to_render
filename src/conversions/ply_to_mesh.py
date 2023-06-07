@@ -8,11 +8,13 @@ from plyfile import PlyData
 from main import ti
 
 
-# this ti is initialized
+# this ti is initialized as it was imported from main
 def read_ply(fn):
     @ti.kernel
     def create_point_vert(x: ti.types.ndarray(),
-        y: ti.types.ndarray(), z: ti.types.ndarray(), length: ti.i32):
+                          y: ti.types.ndarray(),
+                          z: ti.types.ndarray(),
+                          length: ti.i32):
         for i in range(length):
             points[i] = ti.Vector([x[i], y[i], z[i]])
 

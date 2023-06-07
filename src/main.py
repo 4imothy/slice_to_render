@@ -1,5 +1,5 @@
 import taichi as ti
-from renders.particle_render import ParticleVisualizer
+from visualizers.particle_render import ParticleVisualizer
 from conversions.tiff_to_ply import tiff_to_ply
 
 if ti._lib.core.with_vulkan():
@@ -7,17 +7,19 @@ if ti._lib.core.with_vulkan():
 elif ti._lib.core.with_cuda():
     arch = ti.cuda
 else:
-    arch = ti.cpu()
+    arch = ti.cpu
 
 # NOTE: cuda not working on mac, check with other systems
 if ti._lib.core.with_metal():
     arch = ti.cpu
 ti.init(arch=arch)
 
+
 def render(points):
     p_viewer = ParticleVisualizer("Visualize", points)
     while p_viewer.window.running:
         p_viewer.render()
+
 
 if __name__ == "__main__":
     # source = "slices/mri.tif"
