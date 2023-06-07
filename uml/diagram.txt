@@ -1,5 +1,3 @@
-Edited on https://www.planttext.com/
-
 @startuml
 
 node "Entry Point" as entry_point
@@ -18,7 +16,7 @@ tiff_stacked --> point_cloud: Create Point Cloud
 point_cloud --> file: Save as file
 point_cloud --> window: Render
 
-file --> point_cloud: <<Read>> Read file
+file --> point_cloud: Read file
 
 point_cloud -. "OpenCV2,NumPy"
 
