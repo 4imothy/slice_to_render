@@ -1,5 +1,5 @@
 import taichi as ti
-from visualizers.particle_render import ParticleVisualizer
+from visualizers.taichi import render
 from conversions.tiff_to_ply import tiff_to_ply
 
 if ti._lib.core.with_vulkan():
@@ -15,12 +15,6 @@ if ti._lib.core.with_metal():
 ti.init(arch=arch)
 
 
-def render(points):
-    p_viewer = ParticleVisualizer("Visualize", points)
-    while p_viewer.window.running:
-        p_viewer.render()
-
-
 if __name__ == "__main__":
     # source = "slices/mri.tif"
     # source = "slices/mri"
@@ -30,4 +24,5 @@ if __name__ == "__main__":
     # has to be imported here as ti is ready to be imported here
     from conversions.ply_to_mesh import read_ply
     points = read_ply(output)
+    # this function contains the draw loop
     render(points)
