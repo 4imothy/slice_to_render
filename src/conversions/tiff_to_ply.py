@@ -1,11 +1,20 @@
+"""Converts tiff imaages in a dir or stacked in a single file to a ply file."""
 import os
 import cv2
 import numpy as np
 
-# creates a point cloud file (.ply) from numpy array
-
 
 def createPlyFile(filename, arr):
+    """
+    Create a ply file and writes the arr of points to it.
+
+    Parameters:
+    - filename (str): Name of the file to write
+    - arr (List[List[float]]): Points to write to the file
+
+    Returns:
+    - filename (str): Name of the created file.
+    """
     # open file and write boilerplate header
     file = open(filename, 'w')
     file.write("ply\n")
@@ -31,8 +40,18 @@ def createPlyFile(filename, arr):
     return filename
 
 
-# extracts points from mask and adds to list
 def addPoints(mask, points_list, depth):
+    """
+    Add points from a mask to a list of points.
+
+    Parameters:
+    - mask (numpy.ndarray): The mask array containing points to be added.
+    - points_list (list): The list to which the points will be appended.
+    - depth (float or int): The depth value to assign to the points.
+
+    Returns:
+    None
+    """
     mask_points = np.where(mask == 255)
     for ind in range(len(mask_points[0])):
         # get point
@@ -42,7 +61,18 @@ def addPoints(mask, points_list, depth):
         points_list.append(point)
 
 
-def tiff_to_ply(path, output_name):
+def tiffToPly(path, output_name):
+    """
+    Convert TIFF image(s) to a point cloud in PLY format.
+
+    Parameters:
+    - path (str): Path to the TIFF image(s) or directory
+        containing TIFF images.
+    - output_name (str): Name of the output PLY file.
+
+    Returns:
+    - str: Path to the created PLY file.
+    """
     # tweakables
     slice_thickness = 0.2  # distance between slices
     xy_scale = 1  # rescale of xy distance
@@ -51,20 +81,9 @@ def tiff_to_ply(path, output_name):
     size = (100, 100)
     flag = cv2.IMREAD_GRAYSCALE
     if os.path.isdir(path):
-        images = get_images_from_dir(path, [".tif", ".tiff"], size, flag)
+        images = getImagesFromDir(path, [".tif", ".tiff"], size, flag)
     else:
-        images = get_images_from_file(path, size, flag)
-
-    images1 = get_images_from_file("slices/mri.tif", size, flag)
-    images2 = get_images_from_dir("slices/mri", [".tif", ".tiff"], size, flag)
-
-    for i, elem in enumerate(images1):
-        if not any(np.array_equal(elem, x) for x in images2):
-            print("No matching element in images2 for element", i, "in images1")
-
-    for i, elem in enumerate(images2):
-        if not any(np.array_equal(elem, x) for x in images1):
-            print("No matching element in images1 for element", i, "in images2")
+        images = getImagesFromFile(path, size, flag)
 
     # create masks
     masks = []
@@ -120,7 +139,20 @@ def tiff_to_ply(path, output_name):
     return createPlyFile(output_name, points)
 
 
-def get_images_from_dir(folder, file_endings, size, flag):
+def getImagesFromDir(folder, file_endings, size, flag):
+    """
+    Load images from a directory with specified file endings.
+
+    Parameters:
+    - folder (str): Path to the directory containing the images.
+    - file_endings (list): List of file endings (e.g., [".tif", ".tiff"])
+    to filter the images.
+    - size (tuple): Size to resize the loaded images to.
+    - flag (int): Flag indicating the color mode for reading the images.
+
+    Returns:
+    - list: List of loaded and resized images from the directory.
+    """
     files = os.listdir(folder)
     images = []
     for file in files:
@@ -132,7 +164,18 @@ def get_images_from_dir(folder, file_endings, size, flag):
     return images
 
 
-def get_images_from_file(path, size, flag):
+def getImagesFromFile(path, size, flag):
+    """
+    Load images from a single, stacked tiff file.
+
+    Parameters:
+    - path (str): Path to the image file.
+    - size (tuple): Size to resize the loaded images to.
+    - flag (int): Flag indicating the color mode for reading the images.
+
+    Returns:
+    - list: List of loaded and resized images from the file.
+    """
     images = []
     read, loaded = cv2.imreadmulti(path, flags=flag)
     if not read:

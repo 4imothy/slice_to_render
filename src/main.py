@@ -1,6 +1,8 @@
+"""Entry point for renderer."""
 import taichi as ti
 from visualizers.taichi import render
-from conversions.tiff_to_ply import tiff_to_ply
+from conversions.tiff_to_ply import tiffToPly
+
 
 if ti._lib.core.with_vulkan():
     arch = ti.vulkan
@@ -20,9 +22,9 @@ if __name__ == "__main__":
     # source = "slices/mri"
     source = "slices/EmbryoCE/focal1.tif"
     output = "mri.ply"
-    tiff_to_ply(source, output)
+    tiffToPly(source, output)
     # has to be imported here as ti is ready to be imported here
-    from conversions.ply_to_mesh import read_ply
+    from conversions.ply_to_cloud import read_ply
     points = read_ply(output)
     # this function contains the draw loop
     render(points)
