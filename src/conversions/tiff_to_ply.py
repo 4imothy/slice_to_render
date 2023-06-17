@@ -1,10 +1,15 @@
-"""Converts tiff imaages in a dir or stacked in a single file to a ply file."""
+"""
+Converts tiff imaages in a dir or stacked in a single file to a ply file.
+
+Exported functions tiffToPly
+Private functions begin with an _
+"""
 import os
 import cv2
 import numpy as np
 
 
-def createPlyFile(filename, arr):
+def _createPlyFile(filename, arr):
     """
     Create a ply file and writes the arr of points to it.
 
@@ -40,7 +45,7 @@ def createPlyFile(filename, arr):
     return filename
 
 
-def addPoints(mask, points_list, depth):
+def _addPoints_(mask, points_list, depth):
     """
     Add points from a mask to a list of points.
 
@@ -81,9 +86,9 @@ def tiffToPly(path, output_name):
     size = (100, 100)
     flag = cv2.IMREAD_GRAYSCALE
     if os.path.isdir(path):
-        images = getImagesFromDir(path, [".tif", ".tiff"], size, flag)
+        images = _getImagesFromDir(path, [".tif", ".tiff"], size, flag)
     else:
-        images = getImagesFromFile(path, size, flag)
+        images = _getImagesFromFile(path, size, flag)
 
     # create masks
     masks = []
@@ -103,12 +108,12 @@ def tiffToPly(path, output_name):
         # do a slice on previous
         prev_mask = np.zeros_like(curr)
         prev_mask[prev == 0] = curr[prev == 0]
-        addPoints(prev_mask, points, depth)
+        _addPoints_(prev_mask, points, depth)
 
         # # do a slice on after
         next_mask = np.zeros_like(curr)
         next_mask[after == 0] = curr[after == 0]
-        addPoints(next_mask, points, depth)
+        _addPoints_(next_mask, points, depth)
 
         # get contour points (_, contours) in OpenCV 2.* or 4.*
         contours = cv2.findContours(
@@ -136,10 +141,10 @@ def tiffToPly(path, output_name):
     points = np.unique(points.reshape(-1, points.shape[-1]), axis=0)
 
     # save to point cloud file
-    return createPlyFile(output_name, points)
+    return _createPlyFile(output_name, points)
 
 
-def getImagesFromDir(folder, file_endings, size, flag):
+def _getImagesFromDir(folder, file_endings, size, flag):
     """
     Load images from a directory with specified file endings.
 
@@ -164,9 +169,9 @@ def getImagesFromDir(folder, file_endings, size, flag):
     return images
 
 
-def getImagesFromFile(path, size, flag):
+def _getImagesFromFile(path, size, flag):
     """
-    Load images from a single, stacked tiff file.
+    Load images from a single, stacked tiff file and put them in an array.
 
     Parameters:
     - path (str): Path to the image file.

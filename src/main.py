@@ -24,7 +24,8 @@ if __name__ == "__main__":
     output = "mri.ply"
     tiffToPly(source, output)
     # has to be imported here as ti is ready to be imported here
-    from conversions.ply_to_cloud import read_ply
-    points = read_ply(output)
+    from conversions.ply_to_cloud import readPly
+    points = readPly(output)
     # this function contains the draw loop
+    # and creation of the visualizer
     render(points)

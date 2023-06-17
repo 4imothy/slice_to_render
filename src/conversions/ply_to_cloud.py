@@ -5,8 +5,16 @@ from plyfile import PlyData
 from main import ti
 
 
-def read_ply(fn):
-    """Take a file name and returns a taichi.Vector.field point cloud."""
+def readPly(fn):
+    """
+    Take a file name and returns a taichi.Vector.field point cloud.
+
+    Parameters:
+    - fn (str): File to read
+
+    Returns:
+    - taichi.Vector.field: point cloud
+    """
     @ti.kernel
     def create_point_vert(x: ti.types.ndarray(),
                           y: ti.types.ndarray(),

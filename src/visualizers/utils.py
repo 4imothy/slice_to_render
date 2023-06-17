@@ -1,8 +1,24 @@
+"""
+Utility functions for rendering particles.
+
+Exported functions: vecToEulor, eulerToVec
+"""
 from math import acos, asin, cos, sin
 from taichi.lang.matrix import Vector
 
 
-def vec_to_euler(v, eps: float = 1e-6):
+def vecToEuler(v, eps: float = 1e-6):
+    """
+    Convert a 3D vector to Euler angles.
+
+    Parameters:
+        v (Vector): The input 3D vector.
+        eps (float, optional): A small value used for float comparison.
+        Defaults to 1e-6.
+
+    Returns:
+        tuple: A tuple containing the yaw and pitch angles in radians.
+    """
     v = v.normalized()
     pitch = asin(v[1])
 
@@ -21,7 +37,17 @@ def vec_to_euler(v, eps: float = 1e-6):
     return yaw, pitch
 
 
-def euler_to_vec(yaw, pitch):
+def eulerToVec(yaw, pitch):
+    """
+    Convert Euler angles to a 3D vector.
+
+    Parameters:
+        yaw (float): The yaw angle in radians.
+        pitch (float): The pitch angle in radians.
+
+    Returns:
+        Vector: The resulting 3D vector.
+    """
     v = Vector([0.0, 0.0, 0.0])
     v[0] = sin(yaw) * cos(pitch)
     v[1] = sin(pitch)

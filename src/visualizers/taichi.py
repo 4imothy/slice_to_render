@@ -1,7 +1,7 @@
 """Contain a visualizer that spawns a window utilizing taich."""
 import taichi as ti
 from taichi.lang.matrix import Vector
-from visualizers.utils import vec_to_euler, euler_to_vec
+from visualizers.utils import vecToEuler, eulerToVec
 import time
 import math
 
@@ -120,7 +120,7 @@ class ParticleVisualizer():
             dx = curr_mouse_x - self.camera.last_mouse_x
             dy = curr_mouse_y - self.camera.last_mouse_y
 
-            yaw, pitch = vec_to_euler(front)
+            yaw, pitch = vecToEuler(front)
 
             yaw_speed *= time_elapsed * 60.0
             pitch_speed *= time_elapsed * 60.0
@@ -133,7 +133,7 @@ class ParticleVisualizer():
             elif pitch < -pitch_limit:
                 pitch = -pitch_limit
 
-            front = euler_to_vec(yaw, pitch)
+            front = eulerToVec(yaw, pitch)
             self.camera.lookat(*(self.camera.curr_position + front))
 
         self.camera.last_mouse_x = curr_mouse_x
@@ -273,10 +273,10 @@ class ParticleVisualizer():
             front = self.get_camera_front()
 
         rotation_amount_rad = math.radians(deg)
-        yaw, pitch = vec_to_euler(front)
+        yaw, pitch = vecToEuler(front)
         yaw += rotation_amount_rad
         yaw = yaw % (2 * math.pi)
-        front = euler_to_vec(yaw, pitch)
+        front = eulerToVec(yaw, pitch)
 
         # Update the camera lookat position
         self.camera.lookat(*(self.camera.curr_position + front))
