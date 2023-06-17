@@ -4,5 +4,7 @@ env
 .DS_Store
 *.ply
 slices/*
-!slices/mri.tif
 src_w_bioformats/
+!slices/mri.tif
+# include modified script
+!env/bin/activate

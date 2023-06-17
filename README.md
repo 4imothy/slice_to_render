@@ -15,6 +15,20 @@ python3 -m venv env
 ```
 pip install -r requirements.txt
 ```
+**Other Requirements**
+- *tkinter:* Python interface to *Tcl/Tk*, currently for python *3.10*
+- If using virtual environment
+	- Start the environment with this command:
+		- *source env/bin/activate --system-site-packages*
+	- Or you can add code to the activate script, for me this worked, 
+	should be similar for all
+```sh
+PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+TK_LIBRARY=$(python3-config --prefix)/lib/python${PYTHON_VERSION}/tkinter
+TKPATH=$(python3-config --prefix)/lib/python${PYTHON_VERSION}/tkinter
+TCL_LIBRARY=$(python3-config --prefix)/lib
+export TCL_LIBRARY TK_LIBRARY TKPATH
+```
 ```
 python src/main.py
 ```
@@ -28,4 +42,3 @@ python src/main.py
 * [ ] Make functions be *ti.kernels* and *ti.func* to speed up
 * [ ] Make it work with resolutions $\neq$ $(100, 100)$
 * [ ] Add color and custom render options
-* [ ] Add the UML outline
