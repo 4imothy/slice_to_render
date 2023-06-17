@@ -5,6 +5,7 @@ from conversions.tiff_to_ply import tiffToPly
 import tkinter as tk
 
 
+
 if ti._lib.core.with_vulkan():
     arch = ti.vulkan
 elif ti._lib.core.with_cuda():
