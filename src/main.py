@@ -1,7 +1,8 @@
 """Entry point for renderer."""
 import taichi as ti
-from visualizers.taichi import render
+from visualizers.taichi import ParticleVisualizer
 from conversions.tiff_to_ply import tiffToPly
+from ui_control import renderUI
 import tkinter as tk
 
 
@@ -27,17 +28,8 @@ if __name__ == "__main__":
     # has to be imported here as ti is ready to be imported here
     from conversions.ply_to_cloud import readPly
     points = readPly(output)
+    # render(points)
     # this function contains the draw loop
     # and creation of the visualizer
-    # render(points)
     # Create a new Tkinter window
-    window = tk.Tk()
-
-    # Set the window title
-    window.title("Hello Tkinter!")
-
-    # Set the window size
-    window.geometry("400x300")
-
-    # Run the Tkinter event loop
-    window.mainloop()
+    renderUI(points)
