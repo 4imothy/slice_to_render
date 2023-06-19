@@ -50,18 +50,10 @@ class ParticleVisualizer():
         Draws the particles to the screen while tracking user input.
 
         Doesn't contain loop to draw continuously.
-
-        Controls to move camera:
-        - w: forward
-        - s: backward
-        - a: left
-        - d: right
-        - e: up
-        - q: down
         """
         self._scene.set_camera(self._camera)
-        self._scene.ambient_light((0.8, 0.8, 0.8))
         self._scene.point_light(pos=(0.5, 1.5, 1.5), color=(1, 1, 1))
+        self._scene.ambient_light((0.8, 0.8, 0.8))
         self._scene.particles(self._particle_pos,
                               color=(1.0, 0.0, 0.0), radius=0.1)
         self._canvas.scene(self._scene)
@@ -146,6 +138,8 @@ class ParticleVisualizer():
         """
         Move the camera back a set distance.
 
+        Does not rerender.
+
         Parameters:
         - dist (float): The amount
 
@@ -164,6 +158,8 @@ class ParticleVisualizer():
         """
         Move the camera forward a set distance.
 
+        Does not rerender.
+        
         Parameters:
         - dist (float): The amount
 
@@ -181,6 +177,8 @@ class ParticleVisualizer():
     def moveLeftDist(self, dist, front=None):
         """
         Move the camera back a set distance.
+        
+        Does not rerender.
 
         Parameters:
         - dist (float): The amount
@@ -198,6 +196,8 @@ class ParticleVisualizer():
     def moveRightDist(self, dist, front=None):
         """
         Move the camera right a set distance.
+
+        Does not rerender
 
         Parameters:
         - dist (float): The amount
