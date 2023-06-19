@@ -159,7 +159,7 @@ class ParticleVisualizer():
         Move the camera forward a set distance.
 
         Does not rerender.
-        
+
         Parameters:
         - dist (float): The amount
 
