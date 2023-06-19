@@ -1,9 +1,8 @@
 """Entry point for renderer."""
 import taichi as ti
-from visualizers.taichi import ParticleVisualizer
+from visualizers.taichi import render
 from conversions.tiff_to_ply import tiffToPly
 from ui_control import renderUI
-import tkinter as tk
 
 
 if ti._lib.core.with_vulkan():
