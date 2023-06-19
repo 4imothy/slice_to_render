@@ -10,6 +10,14 @@ def render(points):
     """
     Repeatedly draws points to the window.
 
+    Controls to move camera:
+        - w: forward
+        - s: backward
+        - a: left
+        - d: right
+        - e: up
+        - q: down
+
     Parameters:
     - points (ti.vector.Field) containing
     the centers of the points
@@ -21,6 +29,7 @@ def render(points):
     while p_viewer.window.running:
         p_viewer.handleInput()
         p_viewer.render()
+        p_viewer.window.show()
 
 
 class ParticleVisualizer():
@@ -49,7 +58,8 @@ class ParticleVisualizer():
         """
         Draws the particles to the screen while tracking user input.
 
-        Doesn't contain loop to draw continuously.
+        Doesn't contain loop to draw continuously. Doesn't show
+        the resulting window.
         """
         self._scene.set_camera(self._camera)
         self._scene.point_light(pos=(0.5, 1.5, 1.5), color=(1, 1, 1))
@@ -57,7 +67,6 @@ class ParticleVisualizer():
         self._scene.particles(self._particle_pos,
                               color=(1.0, 0.0, 0.0), radius=0.1)
         self._canvas.scene(self._scene)
-        self.window.show()
 
     def handleInput(self):
         """

@@ -1,41 +1,18 @@
 """Use taichi and tkinter to create a controllable visualizing window."""
 import tkinter as tk
-from concurrent import futures
 import threading
 import queue
 from visualizers.taichi import ParticleVisualizer
 
+SHOULD_SHOW = True
 
-# tried using taichi render as a seperate thread but taichi
-# doesn't seem to work well with not being on the main thread
-class _TkinterThread(threading.Thread):
-    """A thread that runs to control the taichi render window."""
-    def __init__(self, window)
-        self.window = createWindow()
-        super(_TaichiThread, self).__init__()
-
-    def createWindow():
-        return tk.Tk()
-        
-    def run(self):
-        while self.windowActive():
-            self.window.update()
-    # checks if a tk window is active
-    def windowActive(self):
-        try:
-            self.window.state()
-            return True
-        except tk.TclError:
-            return False
 
 class _TaichiThread(threading.Thread):
     """Class to interface with the taichi rendering thread."""
 
-    def __init__(self, window_name, points, q):
+    def __init__(self, visualizer, q):
         self.q = q
-        self.window_name = window_name
-        self.points = points
-        self.visualizer = None
+        self.visualizer = visualizer
         super(_TaichiThread, self).__init__()
 
     def beginRendering(self):
@@ -47,12 +24,20 @@ class _TaichiThread(threading.Thread):
     # this function started with the threading.Thread.start() method
     # runs on its own thread
     def run(self):
-        self.visualizer = ParticleVisualizer(self.window_name, self.points)
-        self.visualizer.render()
+        global SHOULD_SHOW
+        # causes issues after destroyed
         while self.visualizer.window.running:
-            function, args, kwargs = self.q.get()
-            function(*args, **kwargs)
-            self.visualizer.render()
+            if self.q.qsize() > 0:
+                function, args, kwargs = self.q.get()
+                function(*args, **kwargs)
+                self.visualizer.render()
+                SHOULD_SHOW = True
+
+    def queueEnd(self):
+        self.onThread(self._endRunning)
+
+    def _endRunning(self):
+        self.visualizer.window.running = False
 
     def queueMoveBackwardDist(self, dist):
         self.onThread(self.visualizer.moveBackwardDist, dist)
@@ -76,8 +61,9 @@ def renderUI(points):
         - None
     """
     # tk must be instantiated first
-    window = _createWindow("Controller", 0.2, 0.2)
-    taichi_thread = _TaichiThread("Visualize", points, queue.Queue())
+    window = createWindow("Controller", 0.2, 0.2)
+    visualizer = ParticleVisualizer("Visualizer", points)
+    taichi_thread = _TaichiThread(visualizer, queue.Queue())
 
     move_dist = 5
 
@@ -96,15 +82,16 @@ def renderUI(points):
     camera_scale.grid(row=1, column=0)
     was_change = True
     # render the first time and creates the visualizer
+    global SHOULD_SHOW
+    if SHOULD_SHOW:
+        SHOULD_SHOW = False
+        visualizer.render()
+        visualizer.window.show()
     taichi_thread.beginRendering()
-    while taichi_thread.visualizer is None:
-        pass
-    # restructure for taichi to be on the main thread,
-    # lock the rendering loop until there is an update
-    # the tkinter runs on a seperate loop that is always running
-    # calls functions on the main thread, only one loop necessary that just
-    # calls functions to the main thread
-    while taichi_thread.visualizer.window.running and _tk_window_active(window):
+    while taichi_thread.is_alive() and _tk_window_active(window):
+        if SHOULD_SHOW:
+            SHOULD_SHOW = False
+            visualizer.window.show()
         new_scale = camera_scale.get()
         # render the tkinter window
         window.update()
@@ -119,7 +106,12 @@ def renderUI(points):
 
     if _tk_window_active(window):
         window.destroy()
-    taichi_thread.visualizer.window.destroy()
+
+    # this kills the other thread
+    if taichi_thread.is_alive():
+        taichi_thread.queueEnd()
+        taichi_thread.join()
+        taichi_thread.visualizer.window.destroy()
 
 
 # checks if a tk window is active
@@ -131,7 +123,7 @@ def _tk_window_active(window):
         return False
 
 
-def _createWindow(name, x_scale, y_scale):
+def createWindow(name, x_scale, y_scale):
     """
     Create a tk window to control the taichi visualizer.
 
