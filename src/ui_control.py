@@ -45,6 +45,12 @@ class _TaichiThread(threading.Thread):
     def queueMoveForwardDist(self, dist):
         self.onThread(self.visualizer.moveForwardDist, dist)
 
+    def queueSetRotationH(self, deg):
+        self.onThread(self.visualizer.setCameraRotationH, deg)
+
+    def queueSetRotationV(self, deg):
+        self.onThread(self.visualizer.setCameraRotationV, deg)
+
 
 # make the proper things private in the Particlevisualizer class
 def renderUI(points):
@@ -61,7 +67,16 @@ def renderUI(points):
         - None
     """
     # tk must be instantiated first
-    window = createWindow("Controller", 0.2, 0.2)
+    x_scale = 0.4
+    y_scale = 0.4
+    window = createWindow("Controller", x_scale, y_scale)
+    # share everything equally
+    weight = 1
+    window.grid_rowconfigure(0, weight=weight)
+    window.grid_rowconfigure(1, weight=weight)
+    window.grid_columnconfigure(0, weight=weight)
+    window.grid_columnconfigure(1, weight=weight)
+
     visualizer = ParticleVisualizer("Visualizer", points)
     taichi_thread = _TaichiThread(visualizer, queue.Queue())
 
@@ -77,9 +92,18 @@ def renderUI(points):
               taichi_thread.queueMoveForwardDist(move_dist)
               ).grid(row=0, column=1)
 
-    camera_scale = tk.Scale(window, from_=0, to=100, orient=tk.HORIZONTAL)
-    prev_scale = camera_scale.get()
-    camera_scale.grid(row=1, column=0)
+    angle_min = -90
+    angle_max = 90
+    h_angle_scroll = tk.Scale(window, from_=angle_min, to=angle_max,
+                              orient=tk.HORIZONTAL)
+    v_angle_scroll = tk.Scale(window, from_=angle_min, to=angle_max,
+                              orient=tk.VERTICAL)
+    # angle_scroll.grid(row=1, column=1)
+    h_angle_scroll.grid(row=1, column=0)
+    v_angle_scroll.grid(row=1, column=1)
+    h_curr_angle = h_angle_scroll.get()
+    v_curr_angle = v_angle_scroll.get()
+    # angle_scroll.grid(row=1, column=0)
     was_change = True
     # render the first time and creates the visualizer
     global SHOULD_SHOW
@@ -92,14 +116,18 @@ def renderUI(points):
         if SHOULD_SHOW:
             SHOULD_SHOW = False
             visualizer.window.show()
-        new_scale = camera_scale.get()
+        new_angle = h_angle_scroll.get()
+        if new_angle != h_curr_angle:
+            h_curr_angle = new_angle
+            taichi_thread.queueSetRotationH(h_curr_angle)
+        new_angle = v_angle_scroll.get()
+        if new_angle != v_curr_angle:
+            v_curr_angle = new_angle
+            taichi_thread.queueSetRotationV(v_curr_angle)
         # render the tkinter window
         window.update()
         # render the visualizer window
         # only if there were changes than update the taichi window
-        if prev_scale != new_scale:
-            prev_scale = new_scale
-            was_change = True
 
         if was_change:
             was_change = False

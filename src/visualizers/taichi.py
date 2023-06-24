@@ -52,7 +52,8 @@ class ParticleVisualizer():
         self._scene = ti.ui.Scene()
         self._camera = ti.ui.Camera()
         # set defaults
-        self._camera.position(5, 2, 2)
+        self._camera.position(0, 0, 0)
+        # self._camera.lookat(0, 0, 0)  # set camera lookat
 
     def render(self):
         """
@@ -268,6 +269,46 @@ class ParticleVisualizer():
         up (Vector3): The current up vector of the camera.
         """
         return self._camera.curr_up
+
+    def setCameraRotationH(self, deg, front=None):
+        """
+        Set the rotation of the camera on horizontal plane.
+
+        Parameters:
+        - deg (float): The rotation angle in degrees.
+        - front (Vector3, optional): A pre-calculated front vector representing
+        the viewing direction of the camera.
+        If not provided, it is obtained by calling `get_camera_front`
+        """
+        if front is None:
+            front = self._getCameraFront()
+
+        yaw, pitch = vecToEuler(front)
+        yaw = -1 * math.radians(deg) % (2 * math.pi)
+        front = eulerToVec(yaw, pitch)
+
+        # Update the camera lookat position
+        self._camera.lookat(*(self._camera.curr_position + front))
+
+    def setCameraRotationV(self, deg, front=None):
+        """
+        Set the rotation of the camera in the vertical plane.
+
+        Parameters:
+        - deg (float): The rotation angle in degrees.
+        - front (Vector3, optional): A pre-calculated front vector representing
+        the viewing direction of the camera.
+        If not provided, it is obtained by calling `get_camera_front`
+        """
+        if front is None:
+            front = self._getCameraFront()
+
+        yaw, pitch = vecToEuler(front)
+        pitch = -1 * math.radians(deg) % (2 * math.pi)
+        front = eulerToVec(yaw, pitch)
+
+        # Update the camera lookat position
+        self._camera.lookat(*(self._camera.curr_position + front))
 
     def rotateCamera(self, deg, front=None):
         """
