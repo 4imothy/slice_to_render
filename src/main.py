@@ -27,8 +27,8 @@ if __name__ == "__main__":
     # has to be imported here as ti is ready to be imported here
     from conversions.ply_to_cloud import readPly
     points = readPly(output)
-    # render(points)
     # this function contains the draw loop
     # and creation of the visualizer
     # Create a new Tkinter window
     renderUI(points)
+    # render(points)
