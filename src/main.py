@@ -19,17 +19,19 @@ if ti._lib.core.with_metal():
     arch = ti.cpu
 ti.init(arch=arch)
 
-render_with_control_ui = True
+render_with_control_ui = False
 render_with_keyboard_controls = False
-render_slices = False
+render_slices = True
 
-# source = "slices/EmbryoCE/focal1.tif"
+source = "slices/EmbryoCE/focal1.tif"
 # source = "slices/mri.tif"
+# source = "slices/mri"
 # Make it work for single images, not a priority really
 # source = "slices/mri/mri_1.tiff"
-source = "slices/mri"
+
   
 if __name__ == "__main__":
+    # returns grayscale 100 x 100 images
     images = readPathForFiles(source, [".tif", ".tiff"])
     output = "mri.ply"
     if render_slices:
