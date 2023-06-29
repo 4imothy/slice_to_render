@@ -1,8 +1,10 @@
 """Entry point for renderer."""
 import taichi as ti
-from visualizers.taichi import render
 from conversions.tiff_to_ply import tiffToPly
+from visualizers.taichi import render
 from ui_control import renderUI
+from slice_viewer import view_slices
+from utils import readPathForFiles
 
 
 if ti._lib.core.with_vulkan():
@@ -17,18 +19,34 @@ if ti._lib.core.with_metal():
     arch = ti.cpu
 ti.init(arch=arch)
 
+render_with_control_ui = True
+render_with_keyboard_controls = False
+render_slices = False
 
+# source = "slices/EmbryoCE/focal1.tif"
+# source = "slices/mri.tif"
+# Make it work for single images, not a priority really
+# source = "slices/mri/mri_1.tiff"
+source = "slices/mri"
+  
 if __name__ == "__main__":
-    # source = "slices/mri.tif"
-    # source = "slices/mri"
-    source = "slices/EmbryoCE/focal1.tif"
+    images = readPathForFiles(source, [".tif", ".tiff"])
     output = "mri.ply"
-    tiffToPly(source, output)
+    if render_slices:
+        view_slices(images)
+        exit()
+        
+    tiffToPly(images, output)
     # has to be imported here as ti is ready to be imported here
     from conversions.ply_to_cloud import readPly
+
     points = readPly(output)
     # this function contains the draw loop
     # and creation of the visualizer
     # Create a new Tkinter window
-    renderUI(points)
-    # render(points)
+    if render_with_keyboard_controls:
+        render(points)
+        exit()
+    if render_with_control_ui:
+        renderUI(points)
+        exit()

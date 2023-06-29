@@ -4,7 +4,6 @@ Converts tiff imaages in a dir or stacked in a single file to a ply file.
 Exported functions tiffToPly
 Private functions begin with an _
 """
-import os
 import cv2
 import numpy as np
 
@@ -66,7 +65,7 @@ def _addPoints_(mask, points_list, depth):
         points_list.append(point)
 
 
-def tiffToPly(path, output_name):
+def tiffToPly(images, output_name):
     """
     Convert TIFF image(s) to a point cloud in PLY format.
 
@@ -81,14 +80,6 @@ def tiffToPly(path, output_name):
     # tweakables
     slice_thickness = 0.2  # distance between slices
     xy_scale = 1  # rescale of xy distance
-
-    # load images
-    size = (100, 100)
-    flag = cv2.IMREAD_GRAYSCALE
-    if os.path.isdir(path):
-        images = _getImagesFromDir(path, [".tif", ".tiff"], size, flag)
-    else:
-        images = _getImagesFromFile(path, size, flag)
 
     # create masks
     masks = []
@@ -142,53 +133,3 @@ def tiffToPly(path, output_name):
 
     # save to point cloud file
     return _createPlyFile(output_name, points)
-
-
-def _getImagesFromDir(folder, file_endings, size, flag):
-    """
-    Load images from a directory with specified file endings.
-
-    Parameters:
-    - folder (str): Path to the directory containing the images.
-    - file_endings (list): List of file endings (e.g., [".tif", ".tiff"])
-    to filter the images.
-    - size (tuple): Size to resize the loaded images to.
-    - flag (int): Flag indicating the color mode for reading the images.
-
-    Returns:
-    - list: List of loaded and resized images from the directory.
-    """
-    files = os.listdir(folder)
-    images = []
-    for file in files:
-        is_tif = any(file.endswith(end) for end in file_endings)
-        if is_tif:
-            img = cv2.imread(os.path.join(folder, file), flag)
-            img = cv2.resize(img, size)
-            images.append(img)
-    return images
-
-
-def _getImagesFromFile(path, size, flag):
-    """
-    Load images from a single, stacked tiff file and put them in an array.
-
-    Parameters:
-    - path (str): Path to the image file.
-    - size (tuple): Size to resize the loaded images to.
-    - flag (int): Flag indicating the color mode for reading the images.
-
-    Returns:
-    - list: List of loaded and resized images from the file.
-    """
-    images = []
-    read, loaded = cv2.imreadmulti(path, flags=flag)
-    if not read:
-        # TODO make this an error type
-        print("Couldn't Read File")
-        exit(1)
-    for img in loaded:
-        # change here for more or less resolution
-        img = cv2.resize(img, size)
-        images.append(img)
-    return images
