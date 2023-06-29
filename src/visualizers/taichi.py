@@ -187,7 +187,7 @@ class ParticleVisualizer():
     def moveLeftDist(self, dist, front=None):
         """
         Move the camera back a set distance.
-        
+
         Does not rerender.
 
         Parameters:
