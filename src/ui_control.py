@@ -67,9 +67,8 @@ def renderUI(points):
         - None
     """
     # tk must be instantiated first
-    x_scale = 0.4
-    y_scale = 0.4
-    window = createWindow("Controller", x_scale, y_scale)
+    scale = 0.2
+    window = createWindow("Controller", scale, scale)
     # share everything equally
     weight = 1
     window.grid_rowconfigure(0, weight=weight)
