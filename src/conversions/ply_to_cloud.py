@@ -2,8 +2,7 @@
 
 import numpy as np
 from plyfile import PlyData
-from main import ti
-
+from __main__ import ti
 
 def readPly(fn):
     """

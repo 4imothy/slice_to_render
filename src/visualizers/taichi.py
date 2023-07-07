@@ -1,10 +1,9 @@
-"""Contain a visualizer that spawns a window utilizing taich."""
-import taichi as ti
+"""Contain a visualizer that spawns a window utilizing taichi."""
 from taichi.lang.matrix import Vector
 from visualizers.utils import vecToEuler, eulerToVec
+from __main__ import ti
 import time
 import math
-
 
 def render(points):
     """
@@ -21,6 +20,7 @@ def render(points):
     Parameters:
     - points (ti.vector.Field) containing
     the centers of the points
+    - ti (ti): The initialized taichi object
 
     Returns:
     None

@@ -2,7 +2,6 @@
 import cv2
 import os
 
-
 def isFileEnding(path, file_endings):
     """
     Return true if this file ends in one of the file endings.
@@ -14,7 +13,7 @@ def isFileEnding(path, file_endings):
     return any(path.endswith(end) for end in file_endings)
 
 
-def readPathForFiles(path, file_endings):
+def readPathForFiles(path, file_endings, size):
     """
     Read a file or a directory and returns matching files.
 
@@ -25,7 +24,6 @@ def readPathForFiles(path, file_endings):
        - tif/tiff: Read a stacked image or single image
                     with openCV
     """
-    size = (100, 100)
     flag = cv2.IMREAD_GRAYSCALE
     if os.path.isdir(path):
         images = _getImagesFromDir(path, file_endings,
@@ -35,7 +33,8 @@ def readPathForFiles(path, file_endings):
         is_tif = isFileEnding(path, [".tif", ".tiff"])
         if is_tif:
             images = _getImagesFromFile(path, size, flag)
-
+        else: 
+            images = None
     return images
 
 
