@@ -6,7 +6,6 @@ from visualizers.taichi import ParticleVisualizer
 
 SHOULD_SHOW = True
 
-
 class _TaichiThread(threading.Thread):
     """Class to interface with the taichi rendering thread."""
 
@@ -30,8 +29,9 @@ class _TaichiThread(threading.Thread):
             if self.q.qsize() > 0:
                 function, args, kwargs = self.q.get()
                 function(*args, **kwargs)
-                self.visualizer.render()
-                SHOULD_SHOW = True
+                # self.visualizer.render()
+                if not SHOULD_SHOW:
+                    SHOULD_SHOW = True
 
     def queueEnd(self):
         self.onThread(self._endRunning)
@@ -93,7 +93,7 @@ def renderUI(points):
 
     angle_min = -90
     angle_max = 90
-    h_angle_scroll = tk.Scale(window, from_=angle_min, to=angle_max,
+    h_angle_scroll = tk.Scale(window, from_=-180, to=180,
                               orient=tk.HORIZONTAL)
     v_angle_scroll = tk.Scale(window, from_=angle_min, to=angle_max,
                               orient=tk.VERTICAL)
@@ -114,6 +114,7 @@ def renderUI(points):
     while taichi_thread.is_alive() and _tk_window_active(window):
         if SHOULD_SHOW:
             SHOULD_SHOW = False
+            visualizer.render()
             visualizer.window.show()
         new_angle = h_angle_scroll.get()
         if new_angle != h_curr_angle:
@@ -139,6 +140,8 @@ def renderUI(points):
         taichi_thread.queueEnd()
         taichi_thread.join()
         taichi_thread.visualizer.window.destroy()
+
+    print("exiting normally")
 
 
 # checks if a tk window is active
