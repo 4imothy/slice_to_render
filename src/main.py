@@ -5,10 +5,12 @@ from utils import readPathForFiles
 import tkinter as tk
 from tkinter import filedialog
 
+
 # defining the strings for each rendering method
 render_with_control_ui_str = "Render Points with Control UI"
 render_with_keyboard_controls_str = "Render Points with Keyboard Controls"
 render_slices_str = "Render Slices"
+
 
 def ti_init():
     import taichi as ti
@@ -32,6 +34,7 @@ def ti_init():
 # source = "slices/mri"
 # Make it work for single images, not a priority really
 # source = "slices/mri/mri_1.tiff"
+
 
 def pickImageAndMethod(x_scale, y_scale):
     window = tk.Tk()
