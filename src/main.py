@@ -48,7 +48,7 @@ def pickImageAndMethod(x_scale, y_scale):
     # Set the window size
     window.geometry(f"{desired_width}x{desired_height}")
     weight = 1
-    for i in range(4):     
+    for i in range(4):
         window.grid_rowconfigure(i, weight=weight)
         window.grid_columnconfigure(i, weight=weight)
 
@@ -100,7 +100,7 @@ def pickImageAndMethod(x_scale, y_scale):
 
     return source, rendering_method
 
-  
+
 if __name__ == "__main__":
     source, render_method = pickImageAndMethod(0.4, 0.4)
     # source = "slices/mri.tif"
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         view_slices(images)
         exit()
     global ti
-    ti = ti_init() 
+    ti = ti_init()
     tiffToPly(images, output)
 
     from conversions.ply_to_cloud import readPly

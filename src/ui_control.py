@@ -6,6 +6,7 @@ from visualizers.taichi import ParticleVisualizer
 
 SHOULD_SHOW = True
 
+
 class _TaichiThread(threading.Thread):
     """Class to interface with the taichi rendering thread."""
 
